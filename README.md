@@ -1,6 +1,6 @@
 # visualization_data_2_html
 
-This script can visualization your dataset to an HTML page.  
+This script can visualization your dataset to HTML pages.  
 Result example:  
 ![demo](https://user-images.githubusercontent.com/50667900/142162042-175d9eba-8b0c-4d8a-8805-55ce5e88fcdc.gif)
 
