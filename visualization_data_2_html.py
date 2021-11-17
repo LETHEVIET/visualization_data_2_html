@@ -5,20 +5,29 @@ import base64
 from io import BytesIO
 import sys
 from tqdm import tqdm
+import random
+
 
 class visualization_data_2_html:
-  def __init__(self, images_dir, labels_dir, name, save_dir, labels):
+  def __init__(self, images_dir, labels_dir, name, save_dir, labels, random_size, only):
     self.imgDir = images_dir
     self.labDir = labels_dir
     self.name = name
     self.save_dir = save_dir
     self.labels = labels
+    self.random_size = random_size
+    if len(only) == 0:
+      self.only = labels
+    else:
+      self.only = only
   
   def run(self):
     imgDir = self.imgDir
     labDir = self.labDir
     labels = self.labels
     ls_img = list(Path(imgDir).glob('**/*.jpg'))
+    if self.random_size != -1:
+      ls_img = random.sample(ls_img, self.random_size)
     ls_lab = list(Path(labDir).glob('**/*.txt'))
     ls_img = sorted(ls_img)
     ls_lab = sorted(ls_lab)
@@ -31,10 +40,15 @@ class visualization_data_2_html:
     for i in range(len(labels)):
       category.append([])
 
+    #print(ls_img)
     for i in tqdm(range(0, len(ls_img))):
 
       imgdir = str(ls_img[i])
-      labdir = str(ls_lab[i])
+      labdir = Path(labDir)
+      labdir = labdir / (ls_img[i].stem+".txt")
+      labdir = str(labdir)
+      
+      print(str(ls_img[i]))
 
       f = open(labdir, "r")
       image = Image.open(imgdir)
@@ -61,26 +75,26 @@ class visualization_data_2_html:
 
     print("\t")
     for i in range(len(labels)):
-      print(labels[i], "\t" , len(category[i]))
-      message = '<html><head></head><style>.page { max-width: 800px ; margin: auto; } img {filter: drop-shadow(0 0 0.75rem ); height: 182px ; padding-left: 28px ; padding-top: 9px ;}</style><body><div class="page"><div>'
+      if labels[i] in self.only:
+        print(labels[i], "\t" , len(category[i]))
+        message = '<html><head></head><style>.page { max-width: 800px ; margin: auto; } img {filter: drop-shadow(0 0 0.75rem ); height: 182px ; padding-left: 28px ; padding-top: 9px ;}</style><body><div class="page"><div>'
 
-      fileName = ""
-      for j in range(len(category[i])):
-        filename, base64Str = category[i][j]
-        if filename != fileName:
-          message = message + '<h3>'+ filename + '</h3> <br>'
-          fileName = filename
-        message = message + '<img src="' + base64Str + '" alt="' + filename + '" />'
+        fileName = ""
+        for j in range(len(category[i])):
+          filename, base64Str = category[i][j]
+          if filename != fileName:
+            message = message + '<h3>'+ filename + '</h3> <br>'
+            fileName = filename
+          message = message + '<img src="' + base64Str + '" alt="' + filename + '" />'
 
-      message = message + '</div></div></body></html>'
+        message = message + '</div></div></body></html>'
 
-      saveDir = Path(self.save_dir)
-      fileName = self.name + "_" + labels[i] + ".html"
-      saveDir = saveDir / fileName
-      f = open( saveDir ,'w')
-      f.write(message)
-      f.close()
-    
+        saveDir = Path(self.save_dir)
+        fileName = self.name + "_" + labels[i] + ".html"
+        saveDir = saveDir / fileName
+        f = open( saveDir ,'w')
+        f.write(message)
+        f.close()  
 
 def parser():
     args = argparse.ArgumentParser()
@@ -89,12 +103,14 @@ def parser():
     args.add_argument('--save-dir', type=str, help='specify your save path', required=True)
     args.add_argument('--name', type=str, help='specify your html file name', required=True)
     args.add_argument('--labels', nargs="+", help='list of your bounding box labels', required=True)
+    args.add_argument('--random-size', type=int, default=-1, help='make number of random list from dataset')
+    args.add_argument('--only', nargs="+", default=[], help='specify your list of class you want to see')
     args = args.parse_args()
     
     return args
 
 def main(opt):
-  #print(vars(opt))
+  print(vars(opt))
   html = visualization_data_2_html(**vars(opt))
   html.run()
 
