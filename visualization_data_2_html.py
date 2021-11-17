@@ -110,7 +110,7 @@ def parser():
     return args
 
 def main(opt):
-  print(vars(opt))
+  #print(vars(opt))
   html = visualization_data_2_html(**vars(opt))
   html.run()
 
