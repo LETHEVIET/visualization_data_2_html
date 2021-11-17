@@ -48,7 +48,7 @@ class visualization_data_2_html:
       labdir = labdir / (ls_img[i].stem+".txt")
       labdir = str(labdir)
       
-      print(str(ls_img[i]))
+      #print(str(ls_img[i]))
 
       f = open(labdir, "r")
       image = Image.open(imgdir)
