@@ -95,6 +95,7 @@ class visualization_data_2_html:
         f = open( saveDir ,'w')
         f.write(message)
         f.close()  
+    print(("check " + self.save_dir + " folder to see result."))
 
 def parser():
     args = argparse.ArgumentParser()
