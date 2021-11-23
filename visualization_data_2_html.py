@@ -76,9 +76,9 @@ class visualization_data_2_html:
     print("\t")
     for i in range(len(labels)):
       if labels[i] in self.only:
-        print(labels[i], "\t" , len(category[i]))
+        print(labels[i], len(category[i]))
         message = '<html><head></head><style>.page { max-width: 800px ; margin: auto; } img {filter: drop-shadow(0 0 0.75rem ); height: 182px ; padding-left: 28px ; padding-top: 9px ;}</style><body><div class="page"><div>'
-
+        message = message + "<h2>Box count: " + str(len(category[i])) + "</h2>"
         fileName = ""
         for j in range(len(category[i])):
           filename, base64Str = category[i][j]
