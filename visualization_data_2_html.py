@@ -58,16 +58,23 @@ class visualization_data_2_html:
         bouding_box_info = list(map(float, x.split(" ")))
         
         #print(bouding_box_info)
-        x_min = max((bouding_box_info[1] - bouding_box_info[3]/2) * width, 0)
-        y_min = max((bouding_box_info[2] - bouding_box_info[4]/2) * height, 0)
-        x_max = min((bouding_box_info[1] + bouding_box_info[3]/2) * width, width)
-        y_max = min((bouding_box_info[2] + bouding_box_info[4]/2) * height, height)
+        x_min = max((bouding_box_info[1] - bouding_box_info[3]/2) * width, 1)
+        y_min = max((bouding_box_info[2] - bouding_box_info[4]/2) * height, 1)
+        x_max = min((bouding_box_info[1] + bouding_box_info[3]/2) * width, width-1)
+        y_max = min((bouding_box_info[2] + bouding_box_info[4]/2) * height, height-1)
+
+        if (x_min >= x_max or y_min >= y_max or x_min >= (width-1) or y_min >= (height-1) or x_max <= 0 or y_max <= 0):
+          continue
 
         bouding_box = (x_min, y_min, x_max, y_max)
         cropImg = image.crop(bouding_box)
         
         buffered = BytesIO()
-        cropImg.save(buffered, format="JPEG")
+        try:
+          cropImg.save(buffered, format="JPEG")
+        except:
+          print("\nfail", ls_img[i].stem)
+
         img_str = base64.b64encode(buffered.getvalue())
         img_base64 = bytes("data:image/jpeg;base64,", encoding='utf-8') + img_str
         #print(img_base64.decode("utf-8"))
