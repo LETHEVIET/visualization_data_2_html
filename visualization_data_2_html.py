@@ -58,10 +58,10 @@ class visualization_data_2_html:
         bouding_box_info = list(map(float, x.split(" ")))
         
         #print(bouding_box_info)
-        x_min = min((bouding_box_info[1] - bouding_box_info[3]/2) * width, 0)
-        y_min = min((bouding_box_info[2] - bouding_box_info[4]/2) * height, 0)
-        x_max = max((bouding_box_info[1] + bouding_box_info[3]/2) * width, width)
-        y_max = max((bouding_box_info[2] + bouding_box_info[4]/2) * height, height)
+        x_min = max((bouding_box_info[1] - bouding_box_info[3]/2) * width, 0)
+        y_min = max((bouding_box_info[2] - bouding_box_info[4]/2) * height, 0)
+        x_max = min((bouding_box_info[1] + bouding_box_info[3]/2) * width, width)
+        y_max = min((bouding_box_info[2] + bouding_box_info[4]/2) * height, height)
 
         bouding_box = (x_min, y_min, x_max, y_max)
         cropImg = image.crop(bouding_box)
